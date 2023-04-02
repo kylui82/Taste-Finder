@@ -1,0 +1,34 @@
+[
+    {
+        "_id": "0001",
+        "food_name": "Pork Ramen",
+        "restaurant_name": "Kinton Ramen",
+        "restaurant_address": "5165 Yonge St, Toronto, ON M2N 5P5",
+        "rating": 4.7,
+        "description": "Very tasty Spicy Garlic Pork Ramen! Enough kick to make me sweat but not enough to make me wanna stop eating."
+    },
+    {
+        "_id": "0002",
+        "dish_name": "Bagel",
+        "restaurant_name": "What A Bagel Steeles",
+        "restaurant_address": "7117 Bathurst St, Thornhill, ON L4J 2J6",
+        "rating": 3.9,
+        "description": "Bagels are awesome! Take one with any cream cheese and you can never go wrong. Add some veges on it too and its heaven!"
+    },
+    {
+        "_id": "0003",
+        "dish_name": "Pork Ramen",
+        "restaurant_name": "Konjiki Ramen",
+        "restaurant_address": "5051 Yonge St, North York, ON M2N 5P2",
+        "rating": 4.3,
+        "description": "The portions were also good and enough for one person. The staff was also friendly and helpful so I would definitely order from this place again."
+    },
+    {
+        "_id": "0004",
+        "dish_name": "Bagel",
+        "restaurant_name": "4949 Bathurst St, North York, ON M2R 1Y1",
+        "restaurant_address": "7117 Bathurst St, Thornhill, ON L4J 2J6",
+        "rating": 4.1,
+        "description": "Their bagels are freshly made everyday, the texture of the bagel is chewy!"
+    }
+]
