@@ -10,7 +10,7 @@ require("dotenv").config();
 
 // connect mongodb with mongoose
 mongoose
- .connect("mongodb://127.0.0.1/tastefinder", {
+ .connect("mongodb+srv://ckurihara25:Abcd2155@cluster1.fqwupbi.mongodb.net/?retryWrites=true&w=majority", {
    useNewUrlParser: true,
    useUnifiedTopology: true,
  })
@@ -19,8 +19,12 @@ mongoose
  })
  .catch((err) => console.log(err));
 
+let food_array = module.exports = async function(){
+  const food = await Food.find({});
+ }
 
 // listen on port 3000
 app.listen(3000, () => {
  console.log("Server is listening on port 3000");
 });
+

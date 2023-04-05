@@ -3,11 +3,7 @@
 let mongoose = require("mongoose");
 
 let foodSchema = mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    discription: {
+    food_name: {
         type: String,
         required: true
     },
@@ -15,9 +11,24 @@ let foodSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-    reviews: {
-        type: [String]
-    }
+    reviews: [{
+        restaurant_name:{
+            type: String,
+            required: true
+        },
+        restaurant_address:{
+            type: String,
+            required: true
+        },
+        rating:{
+            type: Number,
+            required: true
+        },
+        description:{
+            type: String,
+            required: true
+        }
+    }]
 });
 
 
