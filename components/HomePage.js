@@ -19,22 +19,43 @@ export const HomePage = memo(({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [masterDataSet, setMasterDataSet] = useState(null);
   const [searchValue, setSearchValue] = useState('');
+
   // {paramkey: searchValue} pass the serch avlue to the next page
-  //Please display the top 10 food based on the count
   const [topFoods, setTopFoods] = useState([]);
   useEffect(() => {
-      // Sort the food items by descending count and get the top 10
-      const food = []
-      const url = "http://localhost:8000/"
-      fetch(url)
-        .then(x => x.json())
-        .then(json => {
-            const sortedFoods = json.sort((a, b) => b.count - a.count);
-            const top10Foods = sortedFoods.slice(0, 10);
-            setItems(json)
-            setTopFoods(top10Foods);
-        })
-  }, []);
+    // Sort the food items by descending count and get the top 10
+    const food = []
+    const url = "http://localhost:8000/"
+    fetch(url)
+      .then(x => x.json())
+      .then(json => {
+        const sortedFoods = json.sort((a, b) => b.count - a.count);
+        const top10Foods = sortedFoods.slice(0, 10);
+        setJson(json)
+        console.log('searchValue: ' + searchValue);
+        setTopFoods(top10Foods);
+      })
+  }, [searchValue]);
+
+  const setJson = (json) => {
+    setItems(json)
+    console.log('Set JSON:' + items);
+  }
+
+  const getSuggestWordList = (filterToken) => {
+    console.log('Loading');
+    console.log('items', items);
+    console.log('filterToken', filterToken);
+    const suggestions = items
+      .filter((item) => item.food_name.toLowerCase().includes(filterToken))
+      .map((item) => ({
+        id: item._id,
+        title: item.food_name,
+      }));
+
+    setMasterDataSet(suggestions);
+    setLoading(false);
+  };
 
   const getSuggestions = useCallback(async (q) => {
     const filterToken = q.toLowerCase();
@@ -45,17 +66,10 @@ export const HomePage = memo(({ navigation }) => {
       return;
     }
     setLoading(true);
+    getSuggestWordList(filterToken);
+  }
+    , [searchValue]);
 
-    const suggestions = items
-      .filter((item) => item.food_name.toLowerCase().includes(filterToken))
-      .map((item) => ({
-        id: item._id,
-        title: item.food_name,
-      }));
-
-    setMasterDataSet(suggestions);
-    setLoading(false);
-  }, []);
 
   return (
     <View style={styles.container}>
@@ -90,7 +104,7 @@ export const HomePage = memo(({ navigation }) => {
                 },
               }}
               onSelectItem={(item) => {
-                item && navigation.navigate('Food', { paramkey: item.food_name });
+                item && navigation.navigate('Food', { paramkey: item.title });
               }}
               loading={loading}
               onChangeText={getSuggestions}
