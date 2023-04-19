@@ -1,10 +1,11 @@
 import { memo, useState, useEffect, useCallback } from 'react';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import Constants from 'expo-constants';
-import { Platform } from 'react-native';
+import { Platform, Animated, Modal } from 'react-native';
 import { IconButton } from '@react-native-material/core';
 import { Icon, Image } from 'react-native-elements';
-
+import * as Progress from 'react-native-progress';
+import Svg, { Circle, Rect } from 'react-native-svg';
 import {
   View,
   Text,
@@ -42,6 +43,7 @@ export const HomePage = memo(({ navigation }) => {
     console.log('Set JSON:' + items);
   }
 
+  //Get suggested list
   const getSuggestWordList = (filterToken) => {
     console.log('Loading');
     console.log('items', items);
@@ -52,11 +54,11 @@ export const HomePage = memo(({ navigation }) => {
         id: item._id,
         title: item.food_name,
       }));
-
     setMasterDataSet(suggestions);
     setLoading(false);
   };
 
+  //Get query
   const getSuggestions = useCallback(async (q) => {
     const filterToken = q.toLowerCase();
     setSearchValue(q);
@@ -69,6 +71,15 @@ export const HomePage = memo(({ navigation }) => {
     getSuggestWordList(filterToken);
   }
     , [searchValue]);
+
+    //Loading modal
+    const [loadingModal, setLoadingModal] = useState(false);
+    const delay = 8;
+    function handleProgressBar() {
+      setLoadingModal(true)
+        setTimeout(() => setLoadingModal(false), delay * 100)
+        navigation.navigate('Result', { paramkey: searchValue });
+    }
 
 
   return (
@@ -120,8 +131,8 @@ export const HomePage = memo(({ navigation }) => {
               type="feather"
               color="white"
               onPress={() => {
-                navigation.navigate('Result', { paramkey: searchValue });
-              }}
+               
+                handleProgressBar()}}
             />
           </View>
         </View>
@@ -153,6 +164,21 @@ export const HomePage = memo(({ navigation }) => {
         )}
         keyExtractor={(item) => item.food_name}
       />
+      <Modal visible={loadingModal}>
+        <Progress.CircleSnail
+          color={'#FF7C60'}
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            fill: 'transparent',
+            marginTop: 520,
+            marginLeft: 10,
+          }}
+          thickness={5}
+          size={60}
+          indeterminate={true}
+        />
+      </Modal>
     </View>
   );
 });
