@@ -38,7 +38,7 @@ function Root() {
           name="Home"
           component={HomePage}
         />
-        <Stack.Screen name="Result" component={Result} />
+        <Stack.Screen name="Result" component={Result} options={{ title: 'Search Result' }}/>
         <Stack.Screen name="Food" component={DishPage} />
       </Stack.Group>
     </Stack.Navigator>
@@ -55,7 +55,6 @@ export default function App() {
             component={Root}
             options={{
               tabBarActiveTintColor: '#FF7C60',
-
               headerShown: false,
               tabBarLabel: 'Home',
               tabBarIcon: ({ color, size }) => (

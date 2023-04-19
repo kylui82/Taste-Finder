@@ -1,11 +1,11 @@
 import { memo, useState, useEffect, useCallback } from 'react';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
-import Constants from 'expo-constants';
 import { Platform, Animated, Modal } from 'react-native';
-import { IconButton } from '@react-native-material/core';
-import { Icon, Image } from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 import * as Progress from 'react-native-progress';
-import Svg, { Circle, Rect } from 'react-native-svg';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Svg, {Circle} from 'react-native-svg';
+
 import {
   View,
   Text,
@@ -80,8 +80,7 @@ export const HomePage = memo(({ navigation }) => {
         setTimeout(() => setLoadingModal(false), delay * 100)
         navigation.navigate('Result', { paramkey: searchValue });
     }
-
-
+    
   return (
     <View style={styles.container}>
       <View style={styles.search}>
@@ -151,12 +150,11 @@ export const HomePage = memo(({ navigation }) => {
             <View style={styles.itemRankingContainer}>
               <Text style={styles.itemRanking}>{index + 1}</Text>
             </View>
-            <Image
-              style={styles.image}
-              source={{
-                uri: 'https://cdn-icons-png.flaticon.com/128/857/857681.png',
-              }}
-            />
+            <MaterialCommunityIcons
+                name="rice"
+                size={30}
+                color="#FF7C60"
+              />
             <View style={styles.itemNameContainer}>
               <Text style={styles.itemName}>{item.food_name}</Text>
             </View>
@@ -164,14 +162,16 @@ export const HomePage = memo(({ navigation }) => {
         )}
         keyExtractor={(item) => item.food_name}
       />
+      
+      {/*  progress circle */}
       <Modal visible={loadingModal}>
         <Progress.CircleSnail
-          color={'#FF7C60'}
+          color={['#FF7C60','#FF7C60','#FF7C60']}
           style={{
             justifyContent: 'center',
             alignItems: 'center',
             fill: 'transparent',
-            marginTop: 520,
+            marginTop: 320,
             marginLeft: 10,
           }}
           thickness={5}
