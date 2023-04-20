@@ -8,6 +8,7 @@ import {
   Platform,
   StatusBar
 } from 'react-native';
+import * as React from 'react';
 import { useState, useEffect } from 'react';
 import Constants from 'expo-constants';
 import { Feather } from '@expo/vector-icons';

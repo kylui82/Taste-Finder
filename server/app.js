@@ -6,9 +6,7 @@ const mongoose = require("mongoose");
 const Food = require("./modules/food");
 const cors = require("cors");
 
-// implement dot env to read env variables
-// require("dotenv").config();
-
+//CORS enables us to fetch localhost8000 from localhost
 app.use(cors());
 
  mongoose.connect("mongodb+srv://ckurihara25:Abcd2155@cluster1.fqwupbi.mongodb.net/?retryWrites=true&w=majority");
@@ -40,3 +38,4 @@ app.listen(8000, () => {
  console.log("Server is listening on port 8000");
 });
 
+//"npm start dev" to run this file
