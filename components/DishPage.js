@@ -6,12 +6,16 @@ import {
   Button,
   Modal,
   Animated,
+  TouchableOpacity,
+  SafeAreaView,
+  StatusBar
 } from "react-native";
 import * as React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useState, useEffect, useRef } from "react";
 import { Card } from "react-native-paper";
 import { ScrollView } from "react-native-gesture-handler";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 // Specific food page
 export function DishPage({ navigation, route }) {
@@ -136,8 +140,9 @@ export function DishPage({ navigation, route }) {
   starRating += `\n(${averageRating.toFixed(1)} out of 5)`;
 
   return (
-    <ScrollView style={{ backgroundColor: "#ff7c60" }}>
-      <View style={styles.dishPage}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+
         <View style={{ alignItems: "center" }}>
           <Text style={styles.foodNameText}>{specificFood.food_name}</Text>
         </View>
@@ -156,100 +161,94 @@ export function DishPage({ navigation, route }) {
             </View>
           </Card>
         ))}
-      </View>
-      <View style={styles.reviewButtonContainer}>
-        <Button
-          title="Add Review"
-          onPress={handleShowModal}
-          buttonStyle={styles.reviewButton}
-        />
-      </View>
-      <Modal visible={showModal} transparent={true}>
-        <View style={styles.modalContainer}>
-          <View style={styles.blurBackground} blurRadius={5} />
+
+
+        <Modal visible={showModal} transparent={true}>
+          <View style={styles.modalContainer}>
+            <View style={styles.blurBackground} blurRadius={5} />
+            <Animated.View
+              style={[
+                styles.modalInputContainer,
+                {
+                  height: "80%",
+                  width: "80%",
+                  opacity: animatedModalOpacity,
+                  transform: [{ scale: animatedModalScale }],
+                },
+              ]}
+            >
+              <Text style={{ color: "#ff7c60", fontSize: 25, fontWeight: "bold" }}>Add Review</Text>
+              <TextInput
+                style={[styles.textBox, isInputFocused.input4 ? styles.inputFocused : styles.input]}
+                placeholder="Restaurant Name"
+                onChangeText={(text) => setRestaurantName(text)}
+                onFocus={() => setInputFocused((prev) => ({ ...prev, input4: true }))}
+                onBlur={() => setInputFocused((prev) => ({ ...prev, input4: false }))}
+                selectionColor={'#FF7C60'}
+                placeholderTextColor="silver"
+              />
+              <TextInput
+                style={[styles.textBox, isInputFocused.input1 ? styles.inputFocused : styles.input]}
+                placeholder="Restaurant Address"
+                onChangeText={(text) => setRestaurantAddress(text)}
+                onFocus={() => setInputFocused((prev) => ({ ...prev, input1: true }))}
+                onBlur={() => setInputFocused((prev) => ({ ...prev, input1: false }))}
+                selectionColor={'#FF7C60'}
+                placeholderTextColor="silver"
+              />
+              <TextInput
+                style={[styles.textBox, isInputFocused.input2 ? styles.inputFocused : styles.input]}
+                placeholder="Rating (1-5)"
+                keyboardType="numeric"
+                onChangeText={(text) => setRating(parseInt(text))}
+                onFocus={() => setInputFocused((prev) => ({ ...prev, input2: true }))}
+                onBlur={() => setInputFocused((prev) => ({ ...prev, input2: false }))}
+                selectionColor={'#FF7C60'}
+                placeholderTextColor="silver"
+              />
+              <TextInput
+                style={[styles.textBox, isInputFocused.input5 ? styles.inputMultiFocused : styles.inputMulti]}
+                placeholder="Description"
+                onChangeText={(text) => setDescription(text)}
+                onFocus={() => setInputFocused((prev) => ({ ...prev, input5: true }))}
+                onBlur={() => setInputFocused((prev) => ({ ...prev, input5: false }))}
+                selectionColor={'#FF7C60'}
+                multiline={true}
+                placeholderTextColor="silver"
+              />
+              <View style={styles.submitButtonContainer}>
+                <View>
+                  <Button
+                    title="Submit"
+                    onPress={() => {
+                      const newReview = {
+                        restaurant_name: restaurantName,
+                        restaurant_address: restaurantAddress,
+                        rating: rating,
+                        description: description,
+                      };
+                      addReview(newReview);
+                      handleCloseModal();
+                      submitAnimationSequence.start();
+                    }}
+                    color="#ff7c60"
+                  />
+                </View>
+                <View style={{ right: 8 }}>
+                  <Button
+                    title="Close"
+                    onPress={handleCloseModal}
+                    buttonStyle={styles.closeButton}
+
+                  />
+                </View>
+              </View>
+            </Animated.View>
+
+          </View>
+        </Modal>
+        <View style={{ alignItems: "center" }}>
           <Animated.View
-            style={[
-              styles.modalInputContainer,
-              {
-                height: "80%",
-                width: "80%",
-                opacity: animatedModalOpacity,
-                transform: [{ scale: animatedModalScale }],
-              },
-            ]}
-          >
-            <Text style={{color:"#ff7c60", fontSize:25, fontWeight:"bold"}}>Add Review</Text>
-            <TextInput
-              style={[styles.textBox, isInputFocused.input4 ? styles.inputFocused : styles.input]}
-              placeholder="Restaurant Name"
-              onChangeText={(text) => setRestaurantName(text)}
-              onFocus={() => setInputFocused((prev) => ({ ...prev, input4: true }))}
-              onBlur={() => setInputFocused((prev) => ({ ...prev, input4: false }))}
-              selectionColor={'#FF7C60'}
-              placeholderTextColor="silver"
-            />
-            <TextInput
-              style={[styles.textBox, isInputFocused.input1 ? styles.inputFocused : styles.input]}
-              placeholder="Restaurant Address"
-              onChangeText={(text) => setRestaurantAddress(text)}
-              onFocus={() => setInputFocused((prev) => ({ ...prev, input1: true }))}
-              onBlur={() => setInputFocused((prev) => ({ ...prev, input1: false }))}
-              selectionColor={'#FF7C60'}
-              placeholderTextColor="silver"
-            />
-            <TextInput
-              style={[styles.textBox, isInputFocused.input2 ? styles.inputFocused : styles.input]}
-              placeholder="Rating (1-5)"
-              keyboardType="numeric"
-              onChangeText={(text) => setRating(parseInt(text))}
-              onFocus={() => setInputFocused((prev) => ({ ...prev, input2: true }))}
-              onBlur={() => setInputFocused((prev) => ({ ...prev, input2: false }))}
-              selectionColor={'#FF7C60'}
-              placeholderTextColor="silver"
-            />
-            <TextInput
-              style={[styles.textBox, isInputFocused.input5 ? styles.inputMultiFocused : styles.inputMulti]}
-              placeholder="Description"
-              onChangeText={(text) => setDescription(text)}
-              onFocus={() => setInputFocused((prev) => ({ ...prev, input5: true }))}
-              onBlur={() => setInputFocused((prev) => ({ ...prev, input5: false }))}
-              selectionColor={'#FF7C60'}
-              multiline={true}
-              placeholderTextColor="silver"
-            />
-            <View style={styles.submitButtonContainer}>
-              <View>
-                <Button
-                  title="Submit"
-                  onPress={() => {
-                    const newReview = {
-                      restaurant_name: restaurantName,
-                      restaurant_address: restaurantAddress,
-                      rating: rating,
-                      description: description,
-                    };
-                    addReview(newReview);
-                    handleCloseModal();
-                    submitAnimationSequence.start();
-                  }}
-                  color="#ff7c60"
-                />
-              </View>
-              <View style={{ right: 8 }}>
-                <Button
-                  title="Close"
-                  onPress={handleCloseModal}
-                  buttonStyle={styles.closeButton}
-                  
-                />
-              </View>
-            </View>
-          </Animated.View>
-          
-        </View>
-      </Modal>
-      <View style={{alignItems:"center"}}>
-      <Animated.View
             style={{
               opacity: submitAnimation,
               transform: [
@@ -267,16 +266,29 @@ export function DishPage({ navigation, route }) {
               <Text style={styles.successText}>Review Submitted!</Text>
             </View>
           </Animated.View>
-          </View>
-    </ScrollView>
+        </View>
+      </ScrollView>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={handleShowModal}
+        style={styles.touchableOpacityStyle}>
+        <MaterialCommunityIcons
+          name="plus"
+          size={30}
+          color="#fff"
+        />
+      </TouchableOpacity>
+
+    </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
-  dishPage: {
+  container: {
     flex: 1,
-    padding: 1,
-    backgroundColor: "##ff7c60",
+    paddingTop: StatusBar.currentHeight,
+  },
+  scrollView: {
+    marginHorizontal: 20,
   },
   foodNameText: {
     fontSize: 24,
@@ -482,8 +494,8 @@ const styles = StyleSheet.create({
     padding: 16,
     alignItems: "center",
     justifyContent: "center",
-    width:400,
-    height:100
+    width: 400,
+    height: 100
   },
   successText: {
     fontSize: 20,
@@ -539,5 +551,21 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
     borderColor: '#FF7C60',
+  },
+  touchableOpacityStyle: {
+    backgroundColor: '#FF7C60',
+    width: 56,
+    height: 56,
+    borderRadius: 33,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    shadowColor: 'rgba(0,0,0, .1)', // IOS
+    shadowOffset: { height:0, width: 0 }, // IOS
+    shadowOpacity: 3, // IOiS
+    shadowRadius: 1, //IOS
+    elevation: 2,
   }
 });
