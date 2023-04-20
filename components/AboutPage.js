@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
 
-export function AboutPage({navigation}) {
+export function AboutPage({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>About Us</Text>
@@ -17,22 +17,25 @@ export function AboutPage({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  
-   headerText: {
+  headerText: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    textAlign: 'left',
   },
   aboutText: {
     fontSize: 18,
     fontStyle: 'italic',
     marginHorizontal: 20,
+    marginTop: 20,
+    lineHeight: 28,
+    textAlign: 'center',
   },
   container: {
     flex: 1,
     justifyContent: 'center',
     paddingTop: Constants.statusBarHeight,
-    backgroundColor: '#ecf0f1',
+    backgroundColor: 'white',
     padding: 8,
   },
 })

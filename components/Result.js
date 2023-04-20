@@ -4,10 +4,12 @@ import {
     StyleSheet,
     FlatList,
     TouchableOpacity,
+    SafeAreaView,
+    Platform,
+    StatusBar
   } from 'react-native';
 import { useState, useEffect } from 'react';
 import Constants from 'expo-constants';
-
 
 export function Result({ navigation, route }) {
     const [food, setFood] = useState([""]);
@@ -25,52 +27,53 @@ export function Result({ navigation, route }) {
     }, []);
   
     return (
-      <View style={styles.containerResult}>
-        <Text style={styles.searchTextResult}>
-          Searched for "{route.params.paramkey}"
-        </Text>
-        {food.length == 0 ? (
-          <Text style={styles.noResultText}>No food found</Text>
-        ) : (
-          <Text style={styles.resultText}>Here are the search results</Text>
-        )}
-        <FlatList
-          data={food}
-          renderItem={({ item }) => (
-            <View style={styles.itemsResult}>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('Food', { paramkey: item.food_name });
-                }}>
-                <View style={styles.foodNameContainer}>
-                  <Text style={styles.foodNameTextResult}>{item.food_name}</Text>
-                </View>
-              </TouchableOpacity>
-  
-              <View style={styles.reviewsContainerResult}>
-                {/* Add code to display reviews here */}
-              </View>
-            </View>
+      <SafeAreaView style={[styles.containerResult, (Platform.os == "android" ? {paddingTop: StatusBar.currentHeight} : {})]}>
+        
+          <Text style={styles.searchTextResult}>
+            Searched for "{route.params.paramkey}"
+          </Text>
+          {food.length == 0 ? (
+            <Text style={styles.noResultText}>No food found</Text>
+          ) : (
+            <Text style={styles.resultText}>Here are the search results</Text>
           )}
-        />
-        {food.length == 0 ? (
-          <Text style={styles.searchAgainText}>
-            Please search for another food
-          </Text>
-        ) : (
-          <Text style={styles.detailsText}>
-            Click on a food item to see details
-          </Text>
-        )}
-      </View>
+          <FlatList
+            data={food}
+            renderItem={({ item }) => (
+              <View style={styles.itemsResult}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('Food', { paramkey: item._id });
+                  }}>
+                  <View style={styles.foodNameContainer}>
+                    <Text style={styles.foodNameTextResult}>{item.food_name}</Text>
+                  </View>
+                </TouchableOpacity>
+    
+                <View style={styles.reviewsContainerResult}>
+                  {/* Add code to display reviews here */}
+                </View>
+              </View>
+            )}
+          />
+          {food.length == 0 ? (
+            <Text style={styles.searchAgainText}>
+              Please search for another food
+            </Text>
+          ) : (
+            <Text style={styles.detailsText}>
+              Click on a food item to see details
+            </Text>
+          )}
+      </SafeAreaView>
     );
   }
 
   const styles = StyleSheet.create({
     containerResult: {
-      flex: 1,
       padding: 10,
-      backgroundColor: '#fff',
+      backgroundColor: 'white',
+      height: "100%"
     },
     searchTextResult: {
       fontSize: 20,
@@ -92,7 +95,8 @@ export function Result({ navigation, route }) {
       marginBottom: 10,
     },
     foodNameContainer: {
-      backgroundColor: '#f2f2f2',
+      width: "25%",
+      backgroundColor: '#FFE5DF',
       padding: 10,
       borderRadius: 5,
     },
