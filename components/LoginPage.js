@@ -12,7 +12,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useState, useEffect } from 'react';
 import Constants from 'expo-constants';
 import * as FileSystem from 'expo-file-system';
-import { Feather } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 export function LoginPage({ navigation }) {
@@ -39,7 +39,12 @@ export function LoginPage({ navigation }) {
  const NavBar = () => {
     return (
       <View style={styles.navBar}>
-        <Image source={{uri:'../assets/icons8-rice-bowl-24.png'}} style={{width: 40, height: 40}} />
+        <MaterialCommunityIcons
+                name="rice"
+                size={24}
+                color="#FF7C60"
+                style={{ marginRight: 18, marginLeft: 12 }}
+              />
       </View>
     );
   };

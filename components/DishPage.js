@@ -7,6 +7,8 @@ import {
   Modal,
   Animated,
 } from "react-native";
+import * as React from 'react';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { useState, useEffect, useRef } from "react";
 import { Card } from "react-native-paper";
 import { ScrollView } from "react-native-gesture-handler";
@@ -21,12 +23,20 @@ export function DishPage({ navigation, route }) {
   const [showReviewForm, setShowReviewForm] = useState(false);
   // Use a state variable to track whether the modal is open or closed
   const [showModal, setShowModal] = useState(false);
+  const [isInputFocused, setInputFocused] = React.useState({
+    input1: false,
+    input2: false,
+    input3: false,
+    input4: false,
+    input5: false,
+  });
 
   const handleAddReviewPress = () => {
     setShowModal(true);
   };
   const animatedModalOpacity = useRef(new Animated.Value(0)).current;
   const animatedModalScale = useRef(new Animated.Value(0)).current;
+  const [submitAnimation] = useState(new Animated.Value(0));
 
   const handleShowModal = () => {
     setShowModal(true);
@@ -43,6 +53,18 @@ export function DishPage({ navigation, route }) {
       }),
     ]).start();
   };
+  const submitAnimationSequence = Animated.sequence([
+    Animated.timing(submitAnimation, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }),
+    Animated.timing(submitAnimation, {
+      toValue: 0,
+      duration: 1000,
+      useNativeDriver: true,
+    }),
+  ]);
 
   const handleCloseModal = () => {
     Animated.parallel([
@@ -116,7 +138,7 @@ export function DishPage({ navigation, route }) {
   return (
     <ScrollView style={{ backgroundColor: "#ff7c60" }}>
       <View style={styles.dishPage}>
-        <View style={{alignItems:"center"}}>
+        <View style={{ alignItems: "center" }}>
           <Text style={styles.foodNameText}>{specificFood.food_name}</Text>
         </View>
 
@@ -156,26 +178,44 @@ export function DishPage({ navigation, route }) {
               },
             ]}
           >
+            <Text style={{color:"#ff7c60", fontSize:25, fontWeight:"bold"}}>Add Review</Text>
             <TextInput
-              style={styles.textBox}
+              style={[styles.textBox, isInputFocused.input4 ? styles.inputFocused : styles.input]}
               placeholder="Restaurant Name"
               onChangeText={(text) => setRestaurantName(text)}
+              onFocus={() => setInputFocused((prev) => ({ ...prev, input4: true }))}
+              onBlur={() => setInputFocused((prev) => ({ ...prev, input4: false }))}
+              selectionColor={'#FF7C60'}
+              placeholderTextColor="silver"
             />
             <TextInput
-              style={styles.textBox}
+              style={[styles.textBox, isInputFocused.input1 ? styles.inputFocused : styles.input]}
               placeholder="Restaurant Address"
               onChangeText={(text) => setRestaurantAddress(text)}
+              onFocus={() => setInputFocused((prev) => ({ ...prev, input1: true }))}
+              onBlur={() => setInputFocused((prev) => ({ ...prev, input1: false }))}
+              selectionColor={'#FF7C60'}
+              placeholderTextColor="silver"
             />
             <TextInput
-              style={styles.textBox}
+              style={[styles.textBox, isInputFocused.input2 ? styles.inputFocused : styles.input]}
               placeholder="Rating (1-5)"
               keyboardType="numeric"
               onChangeText={(text) => setRating(parseInt(text))}
+              onFocus={() => setInputFocused((prev) => ({ ...prev, input2: true }))}
+              onBlur={() => setInputFocused((prev) => ({ ...prev, input2: false }))}
+              selectionColor={'#FF7C60'}
+              placeholderTextColor="silver"
             />
             <TextInput
-              style={styles.textBox}
+              style={[styles.textBox, isInputFocused.input5 ? styles.inputMultiFocused : styles.inputMulti]}
               placeholder="Description"
               onChangeText={(text) => setDescription(text)}
+              onFocus={() => setInputFocused((prev) => ({ ...prev, input5: true }))}
+              onBlur={() => setInputFocused((prev) => ({ ...prev, input5: false }))}
+              selectionColor={'#FF7C60'}
+              multiline={true}
+              placeholderTextColor="silver"
             />
             <View style={styles.submitButtonContainer}>
               <View>
@@ -190,8 +230,9 @@ export function DishPage({ navigation, route }) {
                     };
                     addReview(newReview);
                     handleCloseModal();
+                    submitAnimationSequence.start();
                   }}
-                  buttonStyle={styles.submitButton}
+                  color="#ff7c60"
                 />
               </View>
               <View style={{ right: 8 }}>
@@ -199,12 +240,34 @@ export function DishPage({ navigation, route }) {
                   title="Close"
                   onPress={handleCloseModal}
                   buttonStyle={styles.closeButton}
+                  
                 />
               </View>
             </View>
           </Animated.View>
+          
         </View>
       </Modal>
+      <View style={{alignItems:"center"}}>
+      <Animated.View
+            style={{
+              opacity: submitAnimation,
+              transform: [
+                {
+                  translateY: submitAnimation.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [100, 0],
+                  }),
+                },
+              ],
+            }}
+          >
+            <View style={styles.successContainer}>
+              <Icon name="check-circle" size={34} color="white" />
+              <Text style={styles.successText}>Review Submitted!</Text>
+            </View>
+          </Animated.View>
+          </View>
     </ScrollView>
   );
 }
@@ -411,6 +474,70 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     zIndex: -1,
-    backgroundColor: "#ff7c60",
+    backgroundColor: "white",
   },
+  successContainer: {
+    backgroundColor: "#00cc00",
+    borderRadius: 16,
+    padding: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    width:400,
+    height:100
+  },
+  successText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#fff",
+    marginTop: 8,
+  },
+  label: {
+    marginTop: 5,
+    marginLeft: 12,
+  },
+  input: {
+    borderColor: 'silver',
+    borderRadius: 15,
+    height: 40,
+    marginLeft: 12,
+    marginRight: 12,
+    marginTop: 6,
+    marginBottom: 8,
+    borderWidth: 1,
+    padding: 10,
+  },
+  inputMulti: {
+    borderColor: 'silver',
+    textAlignVertical: 'top',
+    borderRadius: 15,
+    height: 90,
+    marginLeft: 12,
+    marginRight: 12,
+    marginTop: 6,
+    marginBottom: 8,
+    borderWidth: 1,
+    padding: 10,
+  },
+  inputMultiFocused: {
+    borderColor: '#FF7C60',
+    borderRadius: 15,
+    height: 90,
+    marginLeft: 12,
+    marginRight: 12,
+    marginTop: 6,
+    marginBottom: 8,
+    borderWidth: 1,
+    padding: 10,
+  },
+  inputFocused: {
+    borderRadius: 15,
+    height: 40,
+    marginLeft: 12,
+    marginRight: 12,
+    marginTop: 6,
+    marginBottom: 8,
+    borderWidth: 1,
+    padding: 10,
+    borderColor: '#FF7C60',
+  }
 });
