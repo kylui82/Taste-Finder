@@ -46,7 +46,7 @@ export function Result({ navigation, route }) {
             <TouchableOpacity
               style={styles.itemsbox}
               onPress={() => {
-                navigation.navigate('Food', { paramkey: item.food_name });
+                navigation.navigate('Food', { paramkey: item._id });
               }}>
               <MaterialCommunityIcons
                 name="rice"
