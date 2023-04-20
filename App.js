@@ -94,19 +94,6 @@ export default function App() {
               ),
             }}
           />
-          <Tab.Screen
-            name="review"
-            component={AddReview}
-            options={{
-              headerShown: false,
-              tabBarActiveTintColor: '#FF7C60',
-              tabBarLabel: 'Contact Us',
-              tabBarIcon: ({ color, size }) => (
-                <Feather name="message-square" color={color} size={size}/>
-              ),
-            }}
-          />
-          
         </Tab.Navigator>
       </NavigationContainer>
     </View>

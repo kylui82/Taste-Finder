@@ -8,6 +8,7 @@ import {
   Modal,
   Button,
   Alert,
+  Animated
 } from 'react-native';
 
 import { useState } from 'react';
@@ -23,6 +24,24 @@ export function ContactPage() {
   const [showModal, setShowModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  const animation = new Animated.Value(0);
+  const inputRange = [0, 1];
+  const outputRange = [1, 0.8];
+  const scale = animation.interpolate({ inputRange, outputRange });
+
+  const onPressIn = () => {
+    Animated.spring(animation, {
+      toValue: 1,
+      useNativeDriver: true,
+      delay: 50,
+    }).start();
+  };
+  const onPressOut = () => {
+    Animated.spring(animation, {
+      toValue: 0,
+      useNativeDriver: true,
+    }).start();
+  };
   const handleSend = () => {
     if (
       name.trim() === '' ||
@@ -60,7 +79,7 @@ export function ContactPage() {
       );
     }
   };
-
+  
   return (
     // Define the main container view
     <View style={styles.container}>
@@ -134,9 +153,15 @@ export function ContactPage() {
             onChangeText={(text) => setMessage(text)}
             multiline={true}
           />
-          <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
-            <Text style={styles.sendButtonText}>Send Message</Text>
-          </TouchableOpacity>
+          
+          <Animated.View style={[styles.button, { transform: [{ scale }] }]}>
+              <TouchableOpacity
+                onPressIn={onPressIn}
+                onPressOut={onPressOut}
+                onPress={handleSend}>
+                <Text style={styles.textStyle}>Send Message</Text>
+              </TouchableOpacity>
+            </Animated.View>
         </View>
       </ScrollView>
     </View>
@@ -208,5 +233,97 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     marginBottom: 10,
+  },
+  label: {
+    marginTop: 5,
+    marginLeft: 12,
+  },
+  input: {
+    borderColor: 'silver',
+    borderRadius: 15,
+    height: 40,
+    marginLeft: 12,
+    marginRight: 12,
+    marginTop: 6,
+    marginBottom: 8,
+    borderWidth: 1,
+    padding: 10,
+  },
+  inputMulti: {
+    borderColor: 'silver',
+    textAlignVertical: 'top',
+    borderRadius: 15,
+    height: 90,
+    marginLeft: 12,
+    marginRight: 12,
+    marginTop: 6,
+    marginBottom: 8,
+    borderWidth: 1,
+    padding: 10,
+  },
+  inputMultiFocused: {
+    borderColor: '#FF7C60',
+    borderRadius: 15,
+    height: 90,
+    marginLeft: 12,
+    marginRight: 12,
+    marginTop: 6,
+    marginBottom: 8,
+    borderWidth: 1,
+    padding: 10,
+  },
+  inputFocused: {
+    borderRadius: 15,
+    height: 40,
+    marginLeft: 12,
+    marginRight: 12,
+    marginTop: 6,
+    marginBottom: 8,
+    borderWidth: 1,
+    padding: 10,
+    borderColor: '#FF7C60',
+  },
+  button: {
+    alignItems: 'center',
+    backgroundColor: '#DDDDDD',
+    padding: 10,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    margin: 12,
+    borderRadius: 20,
+    padding: 13,
+    elevation: 2,
+    backgroundColor: '#FF7C60',
+  },
+
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
 });
