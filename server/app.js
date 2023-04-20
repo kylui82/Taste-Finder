@@ -7,19 +7,24 @@ const Food = require("./modules/food");
 const cors = require("cors");
 
 // implement dot env to read env variables
-require("dotenv").config();
+// require("dotenv").config();
 
 app.use(cors());
-// connect mongodb with mongoose
-mongoose
- .connect("mongodb+srv://ckurihara25:Abcd2155@cluster1.fqwupbi.mongodb.net/?retryWrites=true&w=majority", {
-   useNewUrlParser: true,
-   useUnifiedTopology: true,
- })
- .then(() => {
+
+ mongoose.connect("mongodb+srv://ckurihara25:Abcd2155@cluster1.fqwupbi.mongodb.net/?retryWrites=true&w=majority");
+ let db = mongoose.connection;
+ 
+ // Check connection
+ db.once("open", function () {
    console.log("Connected to MongoDB");
- })
- .catch((err) => console.log(err));
+ });
+ 
+ // Check for DB errors
+ db.on("error", function (err) {
+   console.log("DB Error");
+ });
+ 
+
 
  app.use("/", async function (req, res) {
   let foods = await Food.find({});

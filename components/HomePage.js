@@ -145,7 +145,7 @@ export const HomePage = memo(({ navigation }) => {
           <TouchableOpacity
             style={styles.item}
             onPress={() => {
-              navigation.navigate('Food', { paramkey: item.food_name });
+              navigation.navigate('Food', { paramkey: item._id });
             }}>
             <View style={styles.itemRankingContainer}>
               <Text style={styles.itemRanking}>{index + 1}</Text>

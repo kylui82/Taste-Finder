@@ -4,6 +4,9 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  SafeAreaView,
+  Platform,
+  StatusBar
 } from 'react-native';
 import { useState, useEffect } from 'react';
 import Constants from 'expo-constants';

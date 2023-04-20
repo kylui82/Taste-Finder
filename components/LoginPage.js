@@ -1,4 +1,3 @@
-
 import { NavigationContainer } from '@react-navigation/native';
 import * as Progress from 'react-native-progress';
 import {
@@ -7,11 +6,14 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  Image
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useState, useEffect } from 'react';
 import Constants from 'expo-constants';
 import * as FileSystem from 'expo-file-system';
+import { Feather } from '@expo/vector-icons';
+
 
 export function LoginPage({ navigation }) {
   const [email, setEmail] = useState('');
@@ -19,116 +21,177 @@ export function LoginPage({ navigation }) {
   const [isRegistering, setIsRegistering] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
 
-  const handleLogin = () => {};
+  const handleLogin = () => {
+  // handle login logic here
+  // call the onLogin prop
+  if (email === 'example@mail.com' && password === 'password123') {
+    setShowProgress(true);
+    setTimeout(() => {
+      navigation.navigate('HomePage');
+    }, 1500);
+    setTimeout(() => {
+      setShowProgress(false);
+    }, 2000);
+  }
+};
 
   const handleRegister = () => {};
+ const NavBar = () => {
+    return (
+      <View style={styles.navBar}>
+        <Image source={{uri:'../assets/icons8-rice-bowl-24.png'}} style={{width: 40, height: 40}} />
+      </View>
+    );
+  };
 
-  return (
+return (
     <View style={styles.container}>
-      <Text style={styles.title}>{isRegistering ? 'Register' : 'Login'}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        onChangeText={setEmail}
-        value={email}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        onChangeText={setPassword}
-        value={password}
-      />
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={isRegistering ? handleRegister : handleLogin}>
-        <Text style={styles.buttonText}>
-          {isRegistering ? 'Register' : 'Login'}
-        </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={[styles.button, { backgroundColor: 'yellow' }]}
-        onPress={() => {
-          setShowProgress(true);
-          setTimeout(() => {
-            navigation.navigate('Main');
-          }, 1500);
-          setTimeout(() => {
-            setShowProgress(false);
-          }, 2000);
-      
-        }}>
-        {showProgress && (
-        <Progress.CircleSnail
-          style={styles.progress}
-          color={['blue']}
-          progress={0}
-        />
-      )}
-        <Text style={[styles.buttonText, { color: 'black' }]}>
-          Continue as a guest
-        </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => setIsRegistering(!isRegistering)}>
-        <Text style={styles.toggleText}>
-          {isRegistering
-            ? 'Already have an account? Login'
-            : "Don't have an account? Register"}
-        </Text>
-      </TouchableOpacity>
+      <NavBar />
+    <View style={styles.pageTitleContainer}>
+    <Text style={styles.pageTitle}>Welcome to Taste Finder</Text>
+  </View>
+      <View style={styles.formContainer}>
+        <Text style={styles.subtitle}>{isRegistering ? 'Register' : 'Login'}</Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            onChangeText={setEmail}
+            value={email}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            secureTextEntry
+            onChangeText={setPassword}
+            value={password}
+          />
+        </View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={isRegistering ? handleRegister : handleLogin}>
+          <Text style={styles.buttonText}>{isRegistering ?'Register':'Login'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, styles.guestButton]}
+          onPress={() => {
+            setShowProgress(true);
+            setTimeout(() => {
+              navigation.navigate('Home');
+            }, 1500);
+            setTimeout(() => {
+              setShowProgress(false);
+            }, 2000);
+          }}>
+          {showProgress && (
+            <Progress.CircleSnail
+              style={styles.progress}
+              color={['blue']}
+              progress={0}
+            />
+          )}
+          <Text style={[styles.buttonText, { color: '#ff7c60' }]}>
+            Continue as a guest
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setIsRegistering(!isRegistering)}>
+          <Text style={styles.toggleText}>
+            {isRegistering ? 'Already have an account? Login' : "Don't have an account? Register"}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    paddingTop: Constants.statusBarHeight,
     backgroundColor: '#ecf0f1',
-    padding: 8,
   },
-title: {
+  navBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ff7c60',
+    height: 60,
+    paddingHorizontal: 10,
+    zIndex: 1,
+  },
+  title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    color: '#fff',
+    marginLeft: 10,
+  },
+  formContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    marginTop: 30,
+  },
+
+  subtitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginVertical: 20,
+    color: '#ff7c60',
   },
   input: {
-    width: '80%',
-    height: 40,
+    width: '100%',
+    height: 50,
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 4,
-    paddingHorizontal: 10,
-    marginBottom: 10,
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    marginBottom: 20,
+    fontSize: 16,
+    color: '#333',
   },
   button: {
-    backgroundColor: '#007aff',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 4,
+    backgroundColor: '#ff7c60',
+    paddingVertical: 15,
+    borderRadius: 10,
     marginTop: 20,
   },
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
     textAlign: 'center',
+    fontSize: 18,
   },
   toggleText: {
-    color: '#007aff',
+    color: '#ff7c60',
     marginTop: 20,
+    fontSize: 16,
+    textAlign: 'center',
   },
-    progress:{
-alignSelf:'center',
-fill:"transparent",
+  progress: {
+    alignSelf: 'center',
+    fill: 'transparent',
+  },
+  guestButton: {
+  backgroundColor: 'transparent',
+  borderColor: '#ff7c60',
+  borderWidth: 2,
+  paddingVertical: 15,
+  borderRadius: 10,
+  marginTop: 20,
+},
+ pageTitleContainer: {
 
-  }
+    height: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: -10,
+  },
+  pageTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: "#3B3A3A",
+  },
 })
-
-
-
-

@@ -10,6 +10,7 @@ import { AboutPage } from './components/AboutPage';
 import { ContactPage } from './components/ContactPage';
 import { Feather } from '@expo/vector-icons';
 import { LoginPage } from './components/LoginPage';
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 import {
   View,
@@ -31,15 +32,10 @@ function Root() {
       // screenOptions={{
       //   headerShown: false}}
       >
-        <Stack.Screen
-          options={{
-            headerShown: false,
-          }}
-          name="Home"
-          component={HomePage}
-        />
-        <Stack.Screen name="Result" component={Result} options={{ title: 'Search Result' }}/>
-        <Stack.Screen name="Food" component={DishPage} />
+        <Stack.Screen options={{headerShown: false,}} name="Login" component={LoginPage} />
+        <Stack.Screen options={{headerShown: false,}} name="Home" component={HomePage}/>
+        <Stack.Screen options={{headerShown: false, title: 'Search Result'}} name="Result" component={Result}/>
+        <Stack.Screen options={{headerShown: false,}} name="Food" component={DishPage} />
       </Stack.Group>
     </Stack.Navigator>
   );
@@ -51,7 +47,7 @@ export default function App() {
       <NavigationContainer>
         <Tab.Navigator sceneContainerStyle={{ backgroundColor: '#f6f6f6f' }}>
           <Tab.Screen
-            name="Home"
+            name="Main"
             component={Root}
             options={{
               tabBarActiveTintColor: '#FF7C60',
@@ -63,24 +59,14 @@ export default function App() {
             }}
           />
           <Tab.Screen
-            name="Add Food Review"
-            component={AddReview}
+            name="Search"
+            component={HomePage}
             options={{
+              headerShown: false,
               tabBarActiveTintColor: '#FF7C60',
-              tabBarLabel: 'Add Review',
+              tabBarLabel: 'Search Food',
               tabBarIcon: ({ color, size }) => (
-                <Feather name="plus-circle" color={color} size={size} />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name="Profile"
-            component={Profile}
-            options={{
-              tabBarActiveTintColor: '#FF7C60',
-              tabBarLabel: 'Profile',
-              tabBarIcon: ({ color, size }) => (
-                <Feather name="user" color={color} size={size} />
+                <Ionicons name="search-outline" color={color} size={size}/>
               ),
             }}
           />
@@ -88,35 +74,27 @@ export default function App() {
             name="About Us"
             component={AboutPage}
             options={{
+              headerShown: false,
               tabBarActiveTintColor: '#FF7C60',
               tabBarLabel: 'About Us',
               tabBarIcon: ({ color, size }) => (
-                <Feather name="user" color={color} size={size} />
+                <Ionicons name="help-outline" color={color} size={size}/>
               ),
             }}
           />
           <Tab.Screen
-            name="Contacy Us"
+            name="Contact Us"
             component={ContactPage}
             options={{
+              headerShown: false,
               tabBarActiveTintColor: '#FF7C60',
               tabBarLabel: 'Contact Us',
               tabBarIcon: ({ color, size }) => (
-                <Feather name="user" color={color} size={size} />
+                <Feather name="message-square" color={color} size={size}/>
               ),
             }}
           />
-          <Tab.Screen
-            name="Login"
-            component={LoginPage}
-            options={{
-              tabBarActiveTintColor: '#FF7C60',
-              tabBarLabel: 'Login',
-              tabBarIcon: ({ color, size }) => (
-                <Feather name="user" color={color} size={size} />
-              ),
-            }}
-          />
+          
         </Tab.Navigator>
       </NavigationContainer>
     </View>

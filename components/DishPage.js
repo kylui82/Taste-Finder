@@ -1,20 +1,93 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { useState, useEffect } from 'react';
-import { Card } from 'react-native-paper';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Button,
+  Modal,
+  Animated,
+} from "react-native";
+import { useState, useEffect, useRef } from "react";
+import { Card } from "react-native-paper";
+import { ScrollView } from "react-native-gesture-handler";
 
 // Specific food page
 export function DishPage({ navigation, route }) {
-    const [specificFood, setSpecificFood] = useState("");
-    useEffect(() => {
-        const url = "http://localhost:8000/"
-        fetch(url)
-          .then(x => x.json())
-          .then(json => {
-            setSpecificFood(json.find((f) => f.food_name === route.params.paramkey)),
-            console.log(specificFood)
-          })
-    }, []);
-  
+  const [specificFood, setSpecificFood] = useState("");
+  const [restaurantName, setRestaurantName] = useState("");
+  const [restaurantAddress, setRestaurantAddress] = useState("");
+  const [rating, setRating] = useState(0);
+  const [description, setDescription] = useState("");
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  // Use a state variable to track whether the modal is open or closed
+  const [showModal, setShowModal] = useState(false);
+
+  const handleAddReviewPress = () => {
+    setShowModal(true);
+  };
+  const animatedModalOpacity = useRef(new Animated.Value(0)).current;
+  const animatedModalScale = useRef(new Animated.Value(0)).current;
+
+  const handleShowModal = () => {
+    setShowModal(true);
+    Animated.parallel([
+      Animated.timing(animatedModalOpacity, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.spring(animatedModalScale, {
+        toValue: 1,
+        bounciness: 10,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const handleCloseModal = () => {
+    Animated.parallel([
+      Animated.timing(animatedModalOpacity, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(animatedModalScale, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start(() => setShowModal(false));
+  };
+  const addReview = (review) => {
+    const updatedFood = { ...specificFood };
+    updatedFood.reviews.push(review);
+    setSpecificFood(updatedFood);
+
+    // Update the food item in the database
+    const url = "http://localhost:8000/food/" + updatedFood._id;
+    fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedFood),
+    })
+      .then((response) => response.json())
+      .then((json) => console.log(json))
+      .catch((error) => console.error(error));
+  };
+
+  useEffect(() => {
+    const url = "http://localhost:8000/";
+    fetch(url)
+      .then((x) => x.json())
+      .then((json) => {
+        setSpecificFood(
+          json.find((f) => f._id === route.params.paramkey)
+        ),
+          console.log(specificFood);
+      });
+  }, []);
 
   if (!specificFood) {
     return <Text style={styles.noFoodText}>No food item found</Text>;
@@ -29,40 +102,110 @@ export function DishPage({ navigation, route }) {
   const numFullStars = Math.floor(averageRating);
   const decimal = averageRating - numFullStars;
 
-  let starRating = '⭐️'.repeat(numFullStars);
+  let starRating = "⭐️".repeat(numFullStars);
 
   if (decimal === 0.5) {
-    starRating += '⭐️½';
+    starRating += "⭐️½";
   } else if (decimal > 0 && decimal < 0.5) {
-    starRating += '⭐️';
+    starRating += "⭐️";
   }
 
-  starRating += '☆️'.repeat(5 - numFullStars - (decimal >= 0.5 ? 1 : 0));
+  starRating += "☆️".repeat(5 - numFullStars - (decimal >= 0.5 ? 1 : 0));
   starRating += `\n(${averageRating.toFixed(1)} out of 5)`;
 
   return (
-    <View style={styles.dishPage}>
-      <Text style={styles.foodNameText}>{specificFood.food_name}</Text>
-     
+    <ScrollView style={{ backgroundColor: "#ff7c60" }}>
+      <View style={styles.dishPage}>
+        <View style={{alignItems:"center"}}>
+          <Text style={styles.foodNameText}>{specificFood.food_name}</Text>
+        </View>
+
         {specificFood.reviews.map((review, index) => (
-          <Card 
-          elevation= {2}
-          style={{ borderRadius: 18,marginBottom:16}}>
-          <View key={index} style={styles.reviewContainer}>
-        
-            <Text style={styles.restaurantNameText}>
-              {review.restaurant_name}
-            </Text>
-            <Text style={styles.addressText}>
-              Address: {review.restaurant_address}
-            </Text>
-            <Text style={styles.ratingText}>{starRating}</Text>
-            <Text style={styles.descriptionText}>{review.description}</Text>
-          </View>
-           </Card>
+          <Card elevation={2} style={{ borderRadius: 18, marginBottom: 16 }}>
+            <View key={index} style={styles.reviewContainer}>
+              <Text style={styles.restaurantNameText}>
+                {review.restaurant_name}
+              </Text>
+              <Text style={styles.addressText}>
+                Address: {review.restaurant_address}
+              </Text>
+              <Text style={styles.ratingText}>{starRating}</Text>
+              <Text style={styles.descriptionText}>{review.description}</Text>
+            </View>
+          </Card>
         ))}
-    
-    </View>
+      </View>
+      <View style={styles.reviewButtonContainer}>
+        <Button
+          title="Add Review"
+          onPress={handleShowModal}
+          buttonStyle={styles.reviewButton}
+        />
+      </View>
+      <Modal visible={showModal} transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.blurBackground} blurRadius={5} />
+          <Animated.View
+            style={[
+              styles.modalInputContainer,
+              {
+                height: "80%",
+                width: "80%",
+                opacity: animatedModalOpacity,
+                transform: [{ scale: animatedModalScale }],
+              },
+            ]}
+          >
+            <TextInput
+              style={styles.textBox}
+              placeholder="Restaurant Name"
+              onChangeText={(text) => setRestaurantName(text)}
+            />
+            <TextInput
+              style={styles.textBox}
+              placeholder="Restaurant Address"
+              onChangeText={(text) => setRestaurantAddress(text)}
+            />
+            <TextInput
+              style={styles.textBox}
+              placeholder="Rating (1-5)"
+              keyboardType="numeric"
+              onChangeText={(text) => setRating(parseInt(text))}
+            />
+            <TextInput
+              style={styles.textBox}
+              placeholder="Description"
+              onChangeText={(text) => setDescription(text)}
+            />
+            <View style={styles.submitButtonContainer}>
+              <View>
+                <Button
+                  title="Submit"
+                  onPress={() => {
+                    const newReview = {
+                      restaurant_name: restaurantName,
+                      restaurant_address: restaurantAddress,
+                      rating: rating,
+                      description: description,
+                    };
+                    addReview(newReview);
+                    handleCloseModal();
+                  }}
+                  buttonStyle={styles.submitButton}
+                />
+              </View>
+              <View style={{ right: 8 }}>
+                <Button
+                  title="Close"
+                  onPress={handleCloseModal}
+                  buttonStyle={styles.closeButton}
+                />
+              </View>
+            </View>
+          </Animated.View>
+        </View>
+      </Modal>
+    </ScrollView>
   );
 }
 
@@ -70,13 +213,13 @@ const styles = StyleSheet.create({
   dishPage: {
     flex: 1,
     padding: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "##ff7c60",
   },
   foodNameText: {
     fontSize: 24,
     paddingLeft: 6,
     paddingTop: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   reviewContainer: {
@@ -85,7 +228,7 @@ const styles = StyleSheet.create({
   },
   restaurantNameText: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 8,
     marginBottom: 5,
   },
@@ -97,27 +240,28 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   descriptionText: {
-     fontSize: 17,
+    fontSize: 17,
     marginTop: 10,
   },
   noFoodText: {
     fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginTop: 50,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
   },
   textBox: {
-    color: 'gray',
+    color: "white",
     fontSize: 18,
+    fontWeight: "bold",
     borderWidth: 2,
-    borderColor: 'lightgreen',
+    borderColor: "lightgreen",
     borderRadius: 5,
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 5,
     marginBottom: 10,
     marginRight: 10,
@@ -131,41 +275,41 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   item: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: 'gray',
+    borderBottomColor: "gray",
   },
   itemNameContainer: {
     flex: 1,
   },
   itemName: {
     fontSize: 17,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginLeft: 16,
   },
   itemRankingContainer: {
     width: 60,
-    alignItems: 'center',
+    alignItems: "center",
   },
   itemRanking: {
     fontSize: 17,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   containerResult: {
     flex: 1,
     padding: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   searchTextResult: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   noResultText: {
     fontSize: 18,
-    color: 'red',
+    color: "red",
     marginBottom: 10,
   },
   resultText: {
@@ -174,27 +318,27 @@ const styles = StyleSheet.create({
   },
   itemsResult: {
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: "column",
     marginBottom: 10,
   },
   foodNameContainer: {
-    backgroundColor: '#f2f2f2',
+    backgroundColor: "#f2f2f2",
     padding: 10,
     borderRadius: 5,
   },
   foodNameTextResult: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   foodNameContainerHover: {
-    backgroundColor: '#ddd',
+    backgroundColor: "#ddd",
     padding: 10,
     borderRadius: 5,
   },
   foodNameTextResultHover: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontWeight: "bold",
+    color: "#fff",
   },
 
   reviewsContainerResult: {
@@ -202,10 +346,71 @@ const styles = StyleSheet.create({
   },
   searchAgainText: {
     marginTop: 10,
-    color: '#999',
+    color: "#999",
   },
   detailsText: {
     marginTop: 10,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+  },
+  reviewButtonContainer: {
+    alignItems: "left",
+    marginBottom: 10,
+    justifyContent: "left",
+    width: 100,
+  },
+  reviewButton: {
+    backgroundColor: "#008080",
+    borderRadius: 5,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+  },
+  modalContainer: {
+    blurBackground: 0.5,
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  ModalinputContainer: {
+    blurBackground: 0.5,
+    borderRadius: 10,
+    padding: 20,
+    marginBottom: 20,
+  },
+  input: {
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
+  submitButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  submitButton: {
+    flex: 1,
+    marginRight: 10,
+    backgroundColor: "green",
+    borderRadius: 5,
+    paddingVertical: 10,
+  },
+  closeButton: {
+    flex: 1,
+    marginLeft: 10,
+    backgroundColor: "red",
+    borderRadius: 5,
+    paddingVertical: 10,
+  },
+  // New style for the blurred background
+  blurBackground: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: -1,
+    backgroundColor: "#ff7c60",
   },
 });
