@@ -34,7 +34,7 @@ function Root() {
       >
         <Stack.Screen options={{headerShown: false,}} name="Login" component={LoginPage} />
         <Stack.Screen options={{headerShown: false,}} name="Home" component={HomePage}/>
-        <Stack.Screen options={{headerShown: false,}} name="Result" component={Result} />
+        <Stack.Screen options={{headerShown: false, title: 'Search Result'}} name="Result" component={Result}/>
         <Stack.Screen options={{headerShown: false,}} name="Food" component={DishPage} />
       </Stack.Group>
     </Stack.Navigator>

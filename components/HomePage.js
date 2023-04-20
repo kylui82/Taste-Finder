@@ -1,9 +1,10 @@
 import { memo, useState, useEffect, useCallback } from 'react';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
-import Constants from 'expo-constants';
-import { Platform } from 'react-native';
-import { IconButton } from '@react-native-material/core';
-import { Icon, Image } from 'react-native-elements';
+import { Platform, Animated, Modal } from 'react-native';
+import { Icon } from 'react-native-elements';
+import * as Progress from 'react-native-progress';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Svg, {Circle} from 'react-native-svg';
 
 import {
   View,
@@ -42,6 +43,7 @@ export const HomePage = memo(({ navigation }) => {
     console.log('Set JSON:' + items);
   }
 
+  //Get suggested list
   const getSuggestWordList = (filterToken) => {
     console.log('Loading');
     console.log('items', items);
@@ -52,11 +54,11 @@ export const HomePage = memo(({ navigation }) => {
         id: item._id,
         title: item.food_name,
       }));
-
     setMasterDataSet(suggestions);
     setLoading(false);
   };
 
+  //Get query
   const getSuggestions = useCallback(async (q) => {
     const filterToken = q.toLowerCase();
     setSearchValue(q);
@@ -70,7 +72,15 @@ export const HomePage = memo(({ navigation }) => {
   }
     , [searchValue]);
 
-
+    //Loading modal
+    const [loadingModal, setLoadingModal] = useState(false);
+    const delay = 8;
+    function handleProgressBar() {
+      setLoadingModal(true)
+        setTimeout(() => setLoadingModal(false), delay * 100)
+        navigation.navigate('Result', { paramkey: searchValue });
+    }
+    
   return (
     <View style={styles.container}>
       <View style={styles.search}>
@@ -104,7 +114,7 @@ export const HomePage = memo(({ navigation }) => {
                 },
               }}
               onSelectItem={(item) => {
-                item && navigation.navigate('Food', { paramkey: item.id });
+                item && navigation.navigate('Food', { paramkey: item.title });
               }}
               loading={loading}
               onChangeText={getSuggestions}
@@ -120,8 +130,8 @@ export const HomePage = memo(({ navigation }) => {
               type="feather"
               color="white"
               onPress={() => {
-                navigation.navigate('Result', { paramkey: searchValue });
-              }}
+               
+                handleProgressBar()}}
             />
           </View>
         </View>
@@ -140,12 +150,11 @@ export const HomePage = memo(({ navigation }) => {
             <View style={styles.itemRankingContainer}>
               <Text style={styles.itemRanking}>{index + 1}</Text>
             </View>
-            <Image
-              style={styles.image}
-              source={{
-                uri: 'https://cdn-icons-png.flaticon.com/128/857/857681.png',
-              }}
-            />
+            <MaterialCommunityIcons
+                name="rice"
+                size={30}
+                color="#FF7C60"
+              />
             <View style={styles.itemNameContainer}>
               <Text style={styles.itemName}>{item.food_name}</Text>
             </View>
@@ -153,6 +162,23 @@ export const HomePage = memo(({ navigation }) => {
         )}
         keyExtractor={(item) => item.food_name}
       />
+      
+      {/*  progress circle */}
+      <Modal visible={loadingModal}>
+        <Progress.CircleSnail
+          color={['#FF7C60','#FF7C60','#FF7C60']}
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            fill: 'transparent',
+            marginTop: 320,
+            marginLeft: 10,
+          }}
+          thickness={5}
+          size={60}
+          indeterminate={true}
+        />
+      </Modal>
     </View>
   );
 });
