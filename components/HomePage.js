@@ -114,7 +114,7 @@ export const HomePage = memo(({ navigation }) => {
                 },
               }}
               onSelectItem={(item) => {
-                item && navigation.navigate('Food', { paramkey: item.title });
+                item && navigation.navigate('Food', { paramkey: item.id });
               }}
               loading={loading}
               onChangeText={getSuggestions}

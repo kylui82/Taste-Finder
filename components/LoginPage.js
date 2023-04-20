@@ -88,7 +88,7 @@ return (
           {showProgress && (
             <Progress.CircleSnail
               style={styles.progress}
-              color={['blue']}
+              color={['#FF7C60','#FF7C60','#FF7C60']}
               progress={0}
             />
           )}
