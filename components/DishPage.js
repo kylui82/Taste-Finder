@@ -16,7 +16,7 @@ import { useState, useEffect, useRef } from "react";
 import { Card } from "react-native-paper";
 import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Increment } from "../redux/actions/index";
+import { Increment } from "../redux/actions/index.js";
 import { connect } from "react-redux";
 
 const mapStateToProps = (state) => { return { count: state.addReducer.count } }
@@ -151,7 +151,7 @@ export function DishPage({ route, count, Increment }) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
-        {Increment(specificFood.count)}
+        {/* {Increment(specificFood.count)} */}
         <View style={{ alignItems: "center" }}>
           <Text style={styles.foodNameText}>{specificFood.food_name}</Text>
         </View>
@@ -239,6 +239,7 @@ export function DishPage({ route, count, Increment }) {
                       addReview(newReview);
                       handleCloseModal();
                       submitAnimationSequence.start();
+                      Increment()
                     }}
                     color="#ff7c60"
                   />
