@@ -16,9 +16,14 @@ import { useState, useEffect, useRef } from "react";
 import { Card } from "react-native-paper";
 import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Increment } from "../redux/actions/index";
+import { connect } from "react-redux";
+
+const mapStateToProps = (state) => { return { count: state.addReducer.count } }
+const mapDispatchToProps = { Increment }
 
 // Specific food page
-export function DishPage({ navigation, route }) {
+export function DishPage({ route, count, Increment }) {
   const [specificFood, setSpecificFood] = useState("");
   const [restaurantName, setRestaurantName] = useState("");
   const [restaurantAddress, setRestaurantAddress] = useState("");
@@ -119,7 +124,11 @@ export function DishPage({ navigation, route }) {
     return <Text style={styles.noFoodText}>No food item found</Text>;
   }
 
-  specificFood.count += 1; // Increase the count for the food by 1
+  console.log("before" + specificFood.count)
+   // Increase the count for the food by 1
+  console.log("after" + count)
+
+
 
   const averageRating =
     specificFood.reviews.reduce((sum, review) => sum + review.rating, 0) /
@@ -142,7 +151,7 @@ export function DishPage({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
-
+        {Increment(specificFood.count)}
         <View style={{ alignItems: "center" }}>
           <Text style={styles.foodNameText}>{specificFood.food_name}</Text>
         </View>
@@ -569,3 +578,5 @@ const styles = StyleSheet.create({
     elevation: 2,
   }
 });
+
+export default connect(mapStateToProps, mapDispatchToProps)(DishPage);

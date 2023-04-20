@@ -1,10 +1,16 @@
 import { View, Text, StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
+//display a navigation bar at the top of the screen.
+import { Header } from 'react-native-elements';
 
 export function AboutPage({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>About Us</Text>
+      <Header
+        centerComponent={{ text: 'About Us', style: { color: '#fff', fontSize: 20 } }}
+        backgroundColor="#ff7c60"
+        statusBarProps={{ backgroundColor: '#d45b3e' }}
+      />
       <Text style={styles.aboutText}>
         We are a team of developers who created this app to help people find
         their favourite foods.The Taste Finder App is the best way to find your
@@ -17,12 +23,6 @@ export function AboutPage({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  headerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'left',
-  },
   aboutText: {
     fontSize: 18,
     fontStyle: 'italic',

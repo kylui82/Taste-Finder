@@ -8,13 +8,14 @@ import {
   Modal,
   Button,
   Alert,
-  Animated
+  Animated,
 } from 'react-native';
 
 import { useState } from 'react';
 
 import Constants from 'expo-constants';
-
+// display a navigation bar at the top of the screen.
+import { Header } from 'react-native-elements';
 export function ContactPage() {
   // Define state variables for name, email, subject, message, showModal, and errorMessage
   const [name, setName] = useState('');
@@ -79,7 +80,7 @@ export function ContactPage() {
       );
     }
   };
-  
+
   return (
     // Define the main container view
     <View style={styles.container}>
@@ -102,7 +103,14 @@ export function ContactPage() {
       </Modal>
 
       {/* Define the header text */}
-      <Text style={styles.headerText}>Contact Us</Text>
+      <Header
+        centerComponent={{
+          text: 'Contact Us',
+          style: { color: '#fff', fontSize: 20, marginTop: 1 },
+        }}
+        backgroundColor="#ff7c60"
+        statusBarProps={{ backgroundColor: '#ff7c60' }}
+      />
 
       {/* Define the contact text */}
       <Text style={styles.contactText}>
@@ -145,23 +153,23 @@ export function ContactPage() {
             placeholder="Message"
             placeholderTextColor="black"
             style={[
-            styles.input,
-            styles.messageInput,
-            { backgroundColor: '#c8e6c9' },
+              styles.input,
+              styles.messageInput,
+              { backgroundColor: '#c8e6c9' },
             ]}
             value={message}
             onChangeText={(text) => setMessage(text)}
             multiline={true}
           />
-          
+
           <Animated.View style={[styles.button, { transform: [{ scale }] }]}>
-              <TouchableOpacity
-                onPressIn={onPressIn}
-                onPressOut={onPressOut}
-                onPress={handleSend}>
-                <Text style={styles.textStyle}>Send Message</Text>
-              </TouchableOpacity>
-            </Animated.View>
+            <TouchableOpacity
+              onPressIn={onPressIn}
+              onPressOut={onPressOut}
+              onPress={handleSend}>
+              <Text style={styles.textStyle}>Send Message</Text>
+            </TouchableOpacity>
+          </Animated.View>
         </View>
       </ScrollView>
     </View>
@@ -174,16 +182,11 @@ const styles = StyleSheet.create({
     paddingTop: Constants.statusBarHeight,
     backgroundColor: '#fff',
   },
-  headerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'justify',
-    marginVertical: 20,
-  },
   contactText: {
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 20,
+    marginTop: 20,
   },
   scrollContainer: {
     flexGrow: 1,
