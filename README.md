@@ -22,10 +22,10 @@ This application focuses on reviews of the food rather than that of restaurants.
 ## Parts I work on
 - Create initial wireframe for the app to display to app flow between pages.
 - Create Color version of prototype to finalise the user interface
-- Implement Autocomplete feature at the search bar <br />
+- Create API to fetch data on the Home page and display the top 10 food list
+- Implement Autocomplete component at the search bar <br />
 It allows user to enter any food keywords to search related review. Once user type first 3 characters, any input related food name will be displayed as a dropdown list below the search bar so user need not to type the whole word in the search process and minimize the searching time.
 - Modify UI on Home page, Search result page to make them more aesthetics
-- Fetch Data on the Home page to display the top 10 list
 - Create tabs bar at bottom for navigation between screens
 - Create loading page after clicking the search icon on home page with modal and progress bar
 
