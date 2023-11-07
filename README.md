@@ -16,7 +16,12 @@ This application focuses on reviews of the food rather than that of restaurants.
 
 <img width="1095" alt="Screenshot 2023-04-25 at 1 39 46 PM" src="https://user-images.githubusercontent.com/101900083/234358115-50e727b6-6a8d-437e-b7a7-9e1809685a69.png">
 
+
 ## Prototype:
+<img width="976" alt="Screenshot 2023-11-07 at 1 03 52 PM" src="https://github.com/kylui82/Taste-Finder/assets/101900083/3d3a2d33-5f9a-42d5-be13-71bfd66cbb4f">
+
+
+## Mock-up:
 <img width="934" alt="Screenshot 2023-04-25 at 1 40 52 PM" src="https://user-images.githubusercontent.com/101900083/234358328-d4b6c9c1-5328-457e-9420-20b2730444f9.png">
 
 ## Parts I work on
